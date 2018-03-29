@@ -13,7 +13,7 @@ List of Stock
 Read the public state tree and get all the pending offers.
 #### Input
 N/A
-#### Output
+#### Output
 List of pending offers, without information of investor
 #### Example
 > TBD
