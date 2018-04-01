@@ -4,6 +4,7 @@
 
 <template name="main">
   <h2>Welcome to Stock Settlement</h2>
+  {{> loginButtons}}
   <div class="container">
     <table class="table table-fixed">
       <thead>
@@ -20,7 +21,7 @@
     </table>
   </div>
   <div class="container">
-    <div class="col-sm-4"><a class='btn btn-default' href="/investorLogin">Investor Login</a></div>
+    <div class="col-sm-4"><a class='btn btn-default' href="/investor">Investor Login</a></div>
     <div class="col-sm-4"><button>Banker Login</button></div>
     <div class="col-sm-4"><button>Auditor Login</button></div>
   </div>

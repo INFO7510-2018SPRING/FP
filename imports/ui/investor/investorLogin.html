@@ -1,6 +1,17 @@
 <template name="investorLogin">
     <div>
-       <h2>Welcome to Investor Interface</h2>
-       
+        {{> loginButtons}}
+        <h2>Welcome to Investor Interface</h2>
+        <div class="container">
+            <div class="form-group">
+                <label for="bank">Bank List</label>
+                <select class="form-control" id="bank">
+                    <option>CHASE</option>
+                    <option>BOA</option>
+                    <option>STANDAR</option>
+                </select>
+            </div>
+            <button class="login btn btn-default">Login</button>
+        </div>
     </div>
 </template>

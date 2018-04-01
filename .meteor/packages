@@ -24,3 +24,5 @@ ethereum:web3
 twbs:bootstrap
 kadira:flow-router
 kadira:blaze-layout
+accounts-ui
+accounts-password
