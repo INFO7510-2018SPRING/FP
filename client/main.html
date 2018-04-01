@@ -1,25 +1,34 @@
 <head>
-  <title>final</title>
+  <title>Stock Settlement</title>
 </head>
 
-<body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
-  {{> info}}
-</body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="main">
+  <h2>Welcome to Stock Settlement</h2>
+  <div class="container">
+    <table class="table table-fixed">
+      <thead>
+        <tr>
+          <th class="col-xs-6">Stock Name</th>
+          <th class="col-xs-6">No. Buy</th>
+        </tr>
+      </thead>
+      <tbody>
+       {{#each stocks}}
+        {{> stock}}
+       {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="container">
+    <div class="col-sm-4"><a class='btn btn-default' href="/investorLogin">Investor Login</a></div>
+    <div class="col-sm-4"><button>Banker Login</button></div>
+    <div class="col-sm-4"><button>Auditor Login</button></div>
+  </div>
 </template>
 
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try" target="_blank">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com" target="_blank">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com" target="_blank">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com" target="_blank">Discussions</a></li>
-  </ul>
+<template name="stock">
+  <tr>
+    <td class="col-xs-6">{{stockName}}</td>
+    <td class="col-xs-6">{{buyNumber}}</td>
+  </tr>
 </template>
