@@ -1,0 +1,45 @@
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Unlocking account 0 | Attempt 1/3
+!! Unsupported terminal, password will be echoed.
+Passphrase: 
+Fatal: Failed to read passphrase: EOF
+Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
+Fatal: Failed to read password file: open <(echo: no such file or directory
