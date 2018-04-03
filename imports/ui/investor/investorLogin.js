@@ -5,7 +5,6 @@ import './investorLogin.html';
 
 Template.investorLogin.events({
     'click .login'(event){
-
        Meteor.loginWithPassword("username", "password");
     }
 });

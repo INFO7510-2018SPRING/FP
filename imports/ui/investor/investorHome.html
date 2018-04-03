@@ -1,4 +1,60 @@
 <template name="investorHome">
     <h2>Investor Home Page</h2>
     <button class='btn btn-default logout'>Logout</button>
+    <div class="container">
+        <table class="table table-fixed">
+          <thead>
+            <tr>
+              <th class="col-xs-4">Stock Name</th>
+              <th class="col-xs-4">Info</th>
+              <th class="col-xs-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+           {{#each investorStockList}}
+            {{> investorStock}}
+           {{/each}}
+          </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <h3>Contract History</h3>
+        <table class="table table-fixed">
+          <thead>
+            <tr>
+              <th class="col-xs-4">Stock Name</th>
+              <th class="col-xs-4">Action</th>
+              <th class="col-xs-4">Number</th>
+            </tr>
+          </thead>
+          <tbody>
+           {{#each investorHistoryList}}
+            {{> investorHistory}}
+           {{/each}}
+          </tbody>
+        </table>
+    </div>
+</template>
+
+<template name="investorHistory">
+    <tr>
+        <td class="col-xs-4">{{stockName}}</td>
+        <td class="col-xs-4">{{action}}</td>
+        <td class="col-xs-4">{{number}}</td>
+    </tr>
+</template>
+
+<template name="investorStock">
+    <tr>
+        <td class="col-xs-4">{{stockName}}</td>
+        {{#if buyNumber}}
+        <td class="col-xs-4">{{buyNumber}}</td>
+        <td class="col-xs-4"><button>Sell</button></td>
+        {{/if}}
+        {{#if sellNumber}}
+        <td class="col-xs-4">{{sellNumber}}</td>
+        <td class="col-xs-4"><button>Buy</button></td>
+        {{/if}}
+    </tr>
 </template>
