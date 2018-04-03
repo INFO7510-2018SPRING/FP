@@ -6,7 +6,7 @@
           <thead>
             <tr>
               <th class="col-xs-4">Stock Name</th>
-              <th class="col-xs-4">Info</th>
+              <th class="col-xs-4">Number</th>
               <th class="col-xs-4">Action</th>
             </tr>
           </thead>
@@ -50,11 +50,11 @@
         <td class="col-xs-4">{{stockName}}</td>
         {{#if buyNumber}}
         <td class="col-xs-4">{{buyNumber}}</td>
-        <td class="col-xs-4"><button>Sell</button></td>
+        <td class="col-xs-4"><a class="btn btn-default" href="/investor-action?stockName={{stockName}}&number={{buyNumber}}&action=Sell&price=100">Sell</a></td>
         {{/if}}
         {{#if sellNumber}}
         <td class="col-xs-4">{{sellNumber}}</td>
-        <td class="col-xs-4"><button>Buy</button></td>
+        <td class="col-xs-4"><a class="btn btn-default" href="/investor-action?stockName={{stockName}}&number={{sellNumber}}&action=Buy&price=100">Buy</a></td>
         {{/if}}
     </tr>
 </template>

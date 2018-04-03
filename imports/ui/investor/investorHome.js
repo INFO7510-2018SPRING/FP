@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import './investorHome.html';
+import './investorAction.js';
 
 Template.investorHome.events({
     'click .logout'(event){

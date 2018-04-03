@@ -1,0 +1,29 @@
+<template name="investorAction">
+    <h2>Investor Page</h2>
+    <div class="container">
+        <table class="table table-fixed">
+            <thead>
+            <tr>
+                <th class="col-xs-3">Stock Name</th>
+                <th class="col-xs-3">Action</th>
+                <th class="col-xs-3">Number</th>
+                <th class="col-xs-3">Price</th>
+            </tr>
+            </thead>
+            <tbody>
+                {{> stockActionInfo}}
+            </tbody>
+        </table>
+    </div>
+
+    <button class='btn btn-default'>Confirm</button>
+</template>
+
+<template name="stockActionInfo">
+        <tr>
+            <td class="col-xs-3">{{data.stockName}}</td>
+            <td class="col-xs-3">{{data.action}}</td>
+            <td class="col-xs-3">{{data.number}}</td>
+            <td class="col-xs-3">{{data.price}}</td>
+        </tr>
+</template>
