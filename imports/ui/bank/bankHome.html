@@ -1,0 +1,77 @@
+<template name="bankHome">
+    <div class="container">
+        <h2>Custodian Bank Home Page</h2>
+        <button class='btn btn-default logout' style="margin-bottom: 2%;">Logout</button>
+        <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="col-sm">Date</th>                
+              <th class="col-sm">Stock Name</th>
+              <th class="col-sm">Unit Price</th>              
+              <th class="col-sm">Amount</th>
+              <th class="col-sm">Total Price</th>              
+              <th class="col-sm">Status</th>              
+              <th class="col-sm">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+           {{#each customerTransactionList}}
+            {{> customerTransaction}}
+           {{/each}}
+          </tbody>
+        </table>
+        </div>
+    </div>
+
+    <div class="container">
+        <h3>Transaction History</h3>
+        <table class="table table-fixed">
+          <thead>
+            <tr>
+                <th class="col-xs-2">Date</th>
+                <th class="col-xs-2">Stock Name</th>
+                <th class="col-xs-2">Unit Price</th>              
+                <th class="col-xs-2">Amount</th>
+                <th class="col-xs-2">Total Price</th>              
+                <th class="col-xs-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+           {{#each investorHistoryList}}
+            {{> investorHistory}}
+           {{/each}}
+          </tbody>
+        </table>
+    </div>
+</template>
+
+<template name="investorHistory">
+    <tr>
+        <td class="col-xs-2">{{date}}</td>
+        <td class="col-xs-2">{{stockName}}</td>
+        <td class="col-xs-2">{{price}}</td>
+        <td class="col-xs-2">{{number}}</td>
+        <td class="col-xs-2">{{totalPrice}}</td>
+        <td class="col-xs-2">{{status}}</td>
+    </tr>
+</template>
+
+<template name="customerTransaction">
+    <tr>
+        <td class="col-sm">{{date}}</td>        
+        <td class="col-sm">{{stockName}}</td>
+        <td class="col-sm">{{price}}</td>        
+        {{#if buyNumber}}
+        <td class="col-sm">{{buyNumber}}</td>
+        <td class="col-sm">{{totalPrice}}</td>
+        <td class="col-sm">{{status}}</td>
+        <td class="col-sm"><a class="btn btn-default" href="/investor-action?stockName={{stockName}}&number={{buyNumber}}&action=Sell&price=150">View</a></td>
+        {{/if}}
+        {{#if sellNumber}}
+        <td class="col-sm">{{sellNumber}}</td>
+        <td class="col-sm">{{status}}</td>
+        <td class="col-sm"><a class="btn btn-default" href="/investor-action?stockName={{stockName}}&number={{sellNumber}}&action=Buy&price=150">View</a></td>
+        {{/if}}
+    </tr>
+</template>
