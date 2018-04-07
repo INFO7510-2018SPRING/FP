@@ -12,20 +12,20 @@ Template.investorHome.events({
 
 Template.investorHome.helpers({
     investorStockList:[
-        { stockName: 'Amazon' , buyNumber: "100"},
-        { stockName: 'Google' , sellNumber: "100"},
-        { stockName: 'FaceBook' , buyNumber: "100"},
-        { stockName: 'Apple' , sellNumber: "100"},
-        { stockName: 'Linked' , buyNumber: "100"},
-        { stockName: 'Dell' , sellNumber: "100"},
-        { stockName: 'Leveno' , buyNumber: "100"},
-        { stockName: 'Apple' , buyNumber: "100"},
+        { stockName: 'Amazon' , price: "150", buyNumber: "100"},
+        { stockName: 'Google' , price: "150", sellNumber: "100"},
+        { stockName: 'FaceBook' , price: "150", buyNumber: "100"},
+        { stockName: 'Apple' , price: "150", sellNumber: "100"},
+        { stockName: 'Linked' , price: "150", buyNumber: "100"},
+        { stockName: 'Dell' , price: "150", sellNumber: "100"},
+        { stockName: 'Leveno' , price: "150", buyNumber: "100"},
+        { stockName: 'Apple' , price: "150", buyNumber: "100"},
     ],
 
     investorHistoryList:[
-        { stockName: 'Amazon' , action: 'Buy', number: "100"},
-        { stockName: 'Google' , action: 'Sell', number: "100"},
-        { stockName: 'FaceBook' , action: 'Buy', number: "100"},
-        { stockName: 'Apple' , action: 'Sell', number: "100"},
+        { stockName: 'Amazon' ,status: 'Pending', number: "100", price: "150", date: "03-04-2017", totalPrice: "15000"},
+        { stockName: 'Google' , status: 'Pending', number: "100", price: "150", date: "03-04-2017", totalPrice: "15000"},
+        { stockName: 'FaceBook' ,status: 'Pending', number: "100", price: "150", date: "03-04-2017", totalPrice: "15000"},
+        { stockName: 'Apple' , status: 'Pending', number: "100", price: "150", date: "03-04-2017", totalPrice: "15000"},
     ]
 });
