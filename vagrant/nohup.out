@@ -43,3 +43,18 @@ Fatal: Error starting protocol stack: listen udp :30303: bind: address already i
 Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
 Fatal: Error starting protocol stack: listen udp :30303: bind: address already in use
 Fatal: Failed to read password file: open <(echo: no such file or directory
+Fatal: Error starting protocol stack: listen udp :21001: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21000: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21002: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21003: bind: address already in use
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Failed to listen rafthttp (listen tcp 0.0.0.0:50402: bind: address already in use)
+Fatal: Failed to listen rafthttp (listen tcp 0.0.0.0:50404: bind: address already in use)
+Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
+Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
+Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
+Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1

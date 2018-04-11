@@ -1,5 +1,5 @@
 # [Vagrant](http://vagrantup.com/)
-starting a 5 nodes quorum chain using vagrant.
+starting a 4 nodes quorum chain using vagrant.
 
 ## 0. 
 Download and install vagrant from [here](https://www.vagrantup.com/).

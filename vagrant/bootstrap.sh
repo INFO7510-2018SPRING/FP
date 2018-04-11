@@ -4,7 +4,7 @@ set -eu -o pipefail
 # install build deps
 add-apt-repository ppa:ethereum/ethereum
 apt-get update
-apt-get install -y build-essential unzip libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev solc sysvbanner wrk
+apt-get install -y build-essential unzip libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev solc sysvbanner wrk htop
 
 # install constellation
 CVER="0.3.2"
@@ -26,7 +26,7 @@ echo 'PATH=$PATH:/usr/local/go/bin' >> /home/vagrant/.bashrc
 # make/install quorum
 git clone https://github.com/jpmorganchase/quorum.git
 pushd quorum >/dev/null
-git checkout tags/v2.0.1
+git checkout tags/v2.0.2
 make all
 cp build/bin/geth /usr/local/bin
 cp build/bin/bootnode /usr/local/bin
