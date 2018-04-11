@@ -3,33 +3,46 @@
 </head>
 
 <template name="main">
-  <h2>Welcome to Stock Settlement</h2>
-  {{> loginButtons}}
   <div class="container">
-    <table class="table table-fixed">
-      <thead>
-        <tr>
-          <th class="col-xs-6">Stock Name</th>
-          <th class="col-xs-6">No. Buy</th>
-        </tr>
-      </thead>
-      <tbody>
-       {{#each stocks}}
-        {{> stock}}
-       {{/each}}
-      </tbody>
-    </table>
-  </div>
+    <h2>Welcome to Stock Settlement</h2>        
+    <div class="row">
+      <div class="col-md">
+        <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="col-sm">Stock Name</th>
+              <th class="col-sm">Unit Price</th>
+              <th class="col-sm">Total Buy</th>
+              <th class="col-sm">Total Sell</th>
+              <th class="col-sm">Sum</th>              
+            </tr>
+          </thead>
+          <tbody>
+            {{#each stocks}}
+              {{> stock}}
+            {{/each}}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>  
   <div class="container">
-    <div class="col-sm-4"><a class='btn btn-default' href="/investor">Investor Login</a></div>
-    <div class="col-sm-4"><button>Banker Login</button></div>
-    <div class="col-sm-4"><button>Auditor Login</button></div>
+    <div class="row">
+        <div class="col-6 col-md-4" style="text-align: center; margin-top: 2%;"><a href="/investor"><button class="btn btn-dark">Investor Login</button></a></div>
+        <div class="col-6 col-md-4" style="text-align: center; margin-top: 2%;"><button class="btn btn-dark">Banker Login</button></div>
+        <div class="col-6 col-md-4" style="text-align: center; margin-top: 2%;"><button class="btn btn-dark">Auditor Login</button></div>
+    </div>
   </div>
 </template>
 
 <template name="stock">
   <tr>
-    <td class="col-xs-6">{{stockName}}</td>
-    <td class="col-xs-6">{{buyNumber}}</td>
+    <td class="col-sm">{{stockName}}</td>
+    <td class="col-sm">{{buyNumber}}</td>    
+    <td class="col-sm">{{buyNumber}}</td>
+    <td class="col-sm">{{buyNumber}}</td>
+    <td class="col-sm">{{buyNumber}}</td>    
   </tr>
 </template>

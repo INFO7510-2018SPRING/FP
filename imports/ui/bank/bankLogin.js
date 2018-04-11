@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
-import './investorLogin.html';
+import './bankLogin.html';
 
 Template.investorLogin.events({
     'click .login'(event){
