@@ -1,6 +1,6 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
-import "../../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./Ownable.sol";
 
 // Stock contract is owned and deployed by auditor, should be public
 contract Stock is Ownable {

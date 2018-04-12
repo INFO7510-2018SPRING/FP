@@ -1,6 +1,6 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
-import "../../node_modules/zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./Ownable.sol";
 
 // Bank contract is owned and deployed by Auditor, should be privateFor that bank
 contract Bank is Ownable {
