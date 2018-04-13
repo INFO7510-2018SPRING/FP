@@ -2,8 +2,8 @@ pragma solidity ^0.4.21;
 
 import "./Ownable.sol";
 
-// PublicOffer contract is owned and deployed by Auditor, should be public
-contract PublicOffer is Ownable {
+// PublicOffers contract is owned and deployed by Auditor, should be public
+contract PublicOffers is Ownable {
     struct Offer {
         uint id;
         uint stockId;

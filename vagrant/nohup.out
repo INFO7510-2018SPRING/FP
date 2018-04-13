@@ -58,3 +58,13 @@ Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
 Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
 Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
 Fatal: first index of committed entry[2] should <= appliedIndex[0] + 1
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: datadir already used by another process
+Fatal: Error starting protocol stack: listen udp :21001: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21003: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21004: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21002: bind: address already in use
+Fatal: Error starting protocol stack: listen udp :21005: bind: address already in use

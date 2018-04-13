@@ -1,0 +1,51 @@
+Stock:
+  - id: 1
+    name: AMZN
+  - id: 2
+    name: APPL
+Bank:
+  1:
+    balance: 200000
+    stockShares:
+      1: 1000
+      2: 2000
+    buy:
+      - stockId: 1
+        unitPrice: 6000
+        shares: 20
+        buyer: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74'
+    sell:
+      - stockId: 2
+        unitPrice: 8000
+        shares: 10
+        seller: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74'
+  2:
+    balance: 100000
+    stockShares: 
+      1: 0
+      2: 0
+    buy:
+      - stockId: 1
+        unitPrice: 5000
+        shares: 20
+        buyer: '0xdd59636e082a092950869044e04498d6f93f607a'
+      - stockId: 2
+        unitPrice: 8000
+        shares: 10
+        buyer: '0xdd59636e082a092950869044e04498d6f93f607a'
+    sell: []
+  3:
+    balance: 0
+    stockShares:
+      1: 800
+      2: 600
+    buy: []
+    sell: 
+      - stockId: 1
+        unitPrice: 5000
+        shares: 20
+        seller: '0x5cc5eb1c6341480d303e3b74aac3ee2260342f5d'
+      - stockId: 2
+        unitPrice: 8000
+        shares: 5
+        seller: '0x5cc5eb1c6341480d303e3b74aac3ee2260342f5d'
