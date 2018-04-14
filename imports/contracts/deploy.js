@@ -144,6 +144,16 @@ const makeOffers = iBank => {
     })
 }
 
+const saveToJSON = () => {
+  const deployed = {
+    stock: StockContract.instance.options.address,
+    bank: BankContract.instances.map(instance => instance.options.address),
+    publicOffers: PublicOffersContract.instance.options.address
+  }
+  fs.writeFileSync('./deployedContractAddress.json', JSON.stringify(deployed, null, 2))
+  console.log('saved')
+}
+
 Promise.resolve()
   .then(() => console.log('=== Stock ==='))
   .then(deployStockContract)
@@ -157,3 +167,5 @@ Promise.resolve()
   .then(() => makeOffers(1))
   .then(() => makeOffers(2))
   .then(() => makeOffers(3))
+  .then(() => console.log('\n=== Saving to JSON ==='))
+  .then(saveToJSON)
