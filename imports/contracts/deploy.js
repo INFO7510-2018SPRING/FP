@@ -34,8 +34,11 @@ const loadContract = name => ({
 
 const BankContract = loadContract('Bank')
 BankContract.instances = new Array(4)
+
 const StockContract = loadContract('Stock')
+
 const PublicOffersContract = loadContract('PublicOffers')
+PublicOffersContract.instances = new Array(4)
 
 const fixtures = yaml.safeLoad(fs.readFileSync('./fixtures.yaml'))
 const defaultOptions = {
@@ -66,10 +69,16 @@ const deployPublicOffersContract = () => new auditorWeb3.eth.Contract(PublicOffe
   .deploy({ data: PublicOffersContract.data })
   .send(defaultOptions)
   .then(instance => {
-    PublicOffersContract.instance = instance
     const address = instance.options.address
-    PublicOffersContract.instance.options = Object.assign(instance.options, defaultOptions)
     console.log(`PublicOffers contract mined: ${address}`)
+    PublicOffersContract.instances[0] = instance
+    PublicOffersContract.instances[0].options = Object.assign(instance.options, defaultOptions)
+    let arr = [1, 2, 3]
+    arr.map(i => {
+      const publicOffersContract = new web3s[i].eth.Contract(PublicOffersContract.abi, address)
+      publicOffersContract.options = Object.assign(publicOffersContract.options, { gas: 1000000000, gasPrice: 0, from: walletAddresses[i] })
+      PublicOffersContract.instances[i] = publicOffersContract
+    })
     return Promise.all(
       [bank1, bank2, bank3].map((bank, i) => {
         console.log(`Adding bank ${i + 1} to publicOffers`)
@@ -131,7 +140,9 @@ const makeOffers = iBank => {
       return Promise.all(bankFixtures['buy'].map(data => {
         console.log(`\tBuying: ${JSON.stringify(data)}`)
         return bankContract.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, data.buyer).send({ privateFor: [auditor.tmPubKey] })
-          .then(() => PublicOffersContract.instance.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares).send())
+          .then(() => PublicOffersContract.instances[iBank].methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares).send())
+          .then(() => PublicOffersContract.instances[iBank].methods.buyOfferCounter().call())
+          .then(res => console.log('\tPublicOffersContract.buyOfferCounter:' + res))
       }))
     })
     .then(() => {
@@ -139,7 +150,9 @@ const makeOffers = iBank => {
       return Promise.all(bankFixtures['sell'].map(data => {
         console.log(`\tSelling: ${JSON.stringify(data)}`)
         return bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, data.seller).send({ privateFor: [auditor.tmPubKey] })
-          .then(() => PublicOffersContract.instance.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares).send())
+          .then(() => PublicOffersContract.instances[iBank].methods.makeSellOffer(data.stockId, data.unitPrice, data.shares).send())
+          .then(() => PublicOffersContract.instances[iBank].methods.sellOfferCounter().call())
+          .then(res => console.log('\tPublicOffersContract.sellOfferCounter:' + res))
       }))
     })
 }
@@ -148,7 +161,7 @@ const saveToJSON = () => {
   const deployed = {
     stock: StockContract.instance.options.address,
     bank: BankContract.instances.map(instance => instance.options.address),
-    publicOffers: PublicOffersContract.instance.options.address
+    publicOffers: PublicOffersContract.instances[0].options.address
   }
   fs.writeFileSync('./deployedContractAddress.json', JSON.stringify(deployed, null, 2))
   console.log('saved')

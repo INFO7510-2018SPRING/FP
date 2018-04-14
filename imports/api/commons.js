@@ -1,7 +1,15 @@
 const fs = require('fs')
+const path = require('path')
+
 const Web3 = require('web3')
 
-const deployed = JSON.parse(fs.readFileSync('../contracts/deployedContractAddress.json'))
+const getContractDir = () => {
+  const root = path.dirname(path.dirname(path.dirname(path.dirname(path.dirname(process.cwd())))))
+  return path.join(root, 'imports/contracts')
+}
+
+const deployedJSONPath = path.join(getContractDir(), 'deployedContractAddress.json')
+const deployed = JSON.parse(fs.readFileSync(deployedJSONPath))
 
 const walletAddresses = [
   '0xed9d02e382b34818e88b88a309c7fe71e65f419d',
@@ -11,8 +19,16 @@ const walletAddresses = [
   '0x0638e1574728b6d862dd5d3a3e0942c3be47d996'
 ]
 
-const getAbi = name => JSON.parse(fs.readFileSync(`../contracts/build/${name}_sol_${name}.abi`))
-const getWeb3 = i => new Web3(`http://localhost:2200${i + 1}`)
+const getAbi = name => {
+  const abiPath = path.join(getContractDir(), `build/${name}_sol_${name}.abi`)
+  return JSON.parse(fs.readFileSync(abiPath))
+}
+
+const getWeb3 = i => {
+  i = i || 4
+  return new Web3(`http://localhost:2200${i + 1}`)
+}
+
 const getOptions = i => ({ from: walletAddresses[i], gasPrice: 0, gas: 1000000000 })
 
 export const getStockContract = i => {
@@ -34,7 +50,12 @@ export const getPublicOffersContract = i => {
 }
 
 export const readAsList = (contract, counter, mapping) => contract.methods[counter]().call()
-  .then(i => Promise.all(
-    new Array(i).fill(undefined)
-      .map((_, idx) => contract.methods[mapping](idx + 1).call())
-  ))
+  .then(i => {
+    return Promise.all(
+      new Array(parseInt(i)).fill(undefined)
+        .map((_, idx) => contract.methods[mapping](idx + 1).call())
+    ).then(x => {
+      console.log(`readAsList, ${counter}: ${i}, mapping: ${mapping} \n`, x)
+      return x
+    })
+  })
