@@ -10,6 +10,7 @@ contract PublicOffers is Ownable {
         uint unitPrice;
         uint shares;
         address bank;
+        uint blockNumber;
         OfferState state;
     }
     enum OfferState { Created, Matched, Canceled }
@@ -44,6 +45,7 @@ contract PublicOffers is Ownable {
             unitPrice: _unitPrice,
             shares: _shares,
             bank: msg.sender,
+            blockNumber: block.number,
             state: OfferState.Created
         });
     }
@@ -56,6 +58,7 @@ contract PublicOffers is Ownable {
             unitPrice: _unitPrice,
             shares: _shares,
             bank: msg.sender,
+            blockNumber: block.number,
             state: OfferState.Created
         });
     }

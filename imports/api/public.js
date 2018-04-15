@@ -18,7 +18,7 @@ export const getStockList = ({ i }) => {
  * @param {Number} i: the ith bank that is reading
  * @returns a promise that resolves an array of publicSellOffer
  * [
- *    { bank: "0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", id: "1", shares: "10", state: "0", stockId: "2", unitPrice: "8000" }
+ *    { bank: "0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", id: "1", shares: "10", state: "0", stockId: "2", unitPrice: "8000", blockNumber: "1" }
  * ]
  */
 export const getPublicSellOfferList = ({ i }) => {
@@ -31,7 +31,7 @@ export const getPublicSellOfferList = ({ i }) => {
  * @param {Number} i: the ith bank that is reading
  * @returns a promise that resolves an array of publicBuyOffer
  * [
- *    { bank: "0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", id: "1", shares: "10", state: "0", stockId: "2", unitPrice: "8000" }
+ *    { bank: "0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", id: "1", shares: "10", state: "0", stockId: "2", unitPrice: "8000", blockNumber: "1" }
  * ]
  */
 export const getPublicBuyOfferList = ({ i }) => {
@@ -40,7 +40,7 @@ export const getPublicBuyOfferList = ({ i }) => {
 }
 
 export const getBankList = () => Promise.resolve([
-  { id: 1, name: 'bank1' },
-  { id: 2, name: 'bank2' },
-  { id: 3, name: 'bank3' }
+  { id: 1, name: 'CHASE' },
+  { id: 2, name: 'BOA' },
+  { id: 3, name: 'STANDAR' }
 ])
