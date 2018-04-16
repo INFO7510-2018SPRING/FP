@@ -55,7 +55,7 @@ export const readAsList = (contract, counter, mapping) => contract.methods[count
       new Array(parseInt(i)).fill(undefined)
         .map((_, idx) => contract.methods[mapping](idx + 1).call())
     ).then(x => {
-      console.log(`readAsList, ${counter}: ${i}, mapping: ${mapping} \n`, x)
+      // console.log(`readAsList, ${counter}: ${i}, mapping: ${mapping} \n`, x)
       return x
     })
   })
