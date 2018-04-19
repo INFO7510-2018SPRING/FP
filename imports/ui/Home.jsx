@@ -4,7 +4,7 @@ import { Connect, SimpleSigner } from 'uport-connect'
 import toastr from 'toastr'
 import { withRouter } from 'react-router-dom'
 
-import PublicOfferTable from './components/PublicOfferTable'
+import { BuyOfferTable, SellOfferTable } from './components/PublicOfferTable'
 import { clientId, network, signer } from '../uPortConfig.json'
 import credentials from '../uPortCredentials.json'
 
@@ -12,41 +12,14 @@ class Home extends Component {
   constructor () {
     super()
     this.state = {
-      buyOffers: [],
-      sellOffers: [],
       iBankInvestor: 1,
-      iBankBanker: 1,
-      stockMap: {}
+      iBankBanker: 1
     }
 
     this.uport = new Connect('INFO7510', {
       clientId,
       network,
       signer: SimpleSigner(signer)
-    })
-
-    Meteor.call('publics.getStockList', (err, res) => {
-      if (err) {
-        console.error(err)
-      } else {
-        res.map(stock => this.setState({ stockMap: { ...this.state.stockMap, [stock.id]: stock.name } }))
-      }
-    })
-
-    Meteor.call('publics.getPublicBuyOfferList', (err, res) => {
-      if (err) {
-        console.error(err)
-      } else {
-        this.setState({ buyOffers: res })
-      }
-    })
-
-    Meteor.call('publics.getPublicSellOfferList', (err, res) => {
-      if (err) {
-        console.error(err)
-      } else {
-        this.setState({ sellOffers: res })
-      }
     })
   }
 
@@ -60,10 +33,12 @@ class Home extends Component {
 
   getCB (next) {
     return (err, account) => {
-      if (err) {
+      if (err || !account) {
         toastr.error('Account not found.')
       } else {
         toastr.success('Login success.')
+        console.log(account)
+        window.sessionStorage.setItem('account', JSON.stringify(account))
         this.props.history.push(next)
       }
     }
@@ -89,54 +64,56 @@ class Home extends Component {
 
   render () {
     return (
-      <div className='container' >
-        <h2>Welcome to Stock Settlement</h2>
-        <h3>Buy Offers</h3>
-        <div className='row'>
-          <div className='col-md'>
-            <PublicOfferTable offers={this.state.buyOffers} stockMap={this.state.stockMap} />
-          </div>
-        </div>
-        <h3>Sell Offers</h3>
-        <div className='row'>
-          <div className='col-md'>
-            <PublicOfferTable offers={this.state.sellOffers} stockMap={this.state.stockMap} />
-          </div>
-        </div>
-        <h3>Login</h3>
-        <div className='row'>
-          <div className='col-6 col-md-4'>
-            <h4>Investor</h4>
-            <div className='input-group'>
-              <select className='custom-select' value={this.state.iBankInvestor} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
-                <option value='1'>CHASE</option>
-                <option value='2'>BOA</option>
-                <option value='3'>STANDAR</option>
-              </select>
-              <div className='input-group-append'>
-                <button className='btn btn-dark' onClick={() => this.investorLogin()}>Login</button>
+      <section className='section'>
+        <div className='container' >
+          <h2 className='title is-2'>Welcome to Stock Settlement</h2>
+          <h3 className='subtitle is-3'>Buy Offers</h3>
+          <BuyOfferTable />
+          <h3 className='subtitle is-3'>Sell Offers</h3>
+          <SellOfferTable />
+          <h3 className='subtitle is-3'>Login</h3>
+          <div className='columns'>
+            <div className='column'>
+              <label class='label'>Investor</label>
+              <div className='field has-addons'>
+                <div className='control'>
+                  <div className='select'>
+                    <select value={this.state.iBankInvestor} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
+                      <option value='1'>CHASE</option>
+                      <option value='2'>BOA</option>
+                      <option value='3'>STANDAR</option>
+                    </select>
+                  </div>
+                </div>
+                <div className='control'>
+                  <a className='button is-dark' onClick={() => this.investorLogin()}>Login</a>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='col-6 col-md-4'>
-            <h4>Banker</h4>
-            <div className='input-group'>
-              <select className='custom-select' value={this.state.iBankBanker} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
-                <option value='1'>CHASE</option>
-                <option value='2'>BOA</option>
-                <option value='3'>STANDAR</option>
-              </select>
-              <div className='input-group-append'>
-                <button className='btn btn-dark' onClick={() => this.bankLogin()}>Login</button>
+            <div className='column'>
+              <label class='label'>Banker</label>
+              <div className='field has-addons'>
+                <div className='control'>
+                  <div className='select'>
+                    <select value={this.state.iBankBanker} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
+                      <option value='1'>CHASE</option>
+                      <option value='2'>BOA</option>
+                      <option value='3'>STANDAR</option>
+                    </select>
+                  </div>
+                </div>
+                <div className='control'>
+                  <a className='button is-dark' onClick={() => this.bankLogin()}>Login</a>
+                </div>
               </div>
             </div>
+            <div className='column'>
+              <label class='label'>Auditor</label>
+              <a className='button is-dark' onClick={() => this.auditorLogin()}>Login</a>
+            </div>
           </div>
-          <div className='col-6 col-md-4'>
-            <h4>Auditor</h4>
-            <button className='btn btn-dark' onClick={() => this.auditorLogin()}>Login</button>
-          </div>
-        </div>
-      </div>
+        </div >
+      </section >
     )
   }
 }
