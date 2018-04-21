@@ -31,14 +31,15 @@ class Home extends Component {
     return Promise.resolve(credentials)
   }
 
-  getCB (next) {
+  getCB ({ next, iBank }) {
     return (err, account) => {
       if (err || !account) {
         toastr.error('Account not found.')
       } else {
         toastr.success('Login success.')
         console.log(account)
-        window.sessionStorage.setItem('account', JSON.stringify(account))
+        window.sessionStorage.setItem('address', account.address)
+        window.sessionStorage.setItem('iBank', iBank)
         this.props.history.push(next)
       }
     }
@@ -46,19 +47,21 @@ class Home extends Component {
 
   investorLogin () {
     return this.loginUPort().then(credentials => {
-      Meteor.call('accounts.signIn', { credentials, nodeIdx: this.state.iBankInvestor }, this.getCB('/investor'))
+      const iBank = this.state.iBankInvestor
+      Meteor.call('accounts.signIn', { credentials, nodeIdx: iBank }, this.getCB({ next: '/investor', iBank }))
     })
   }
 
   bankLogin () {
     return this.loginUPort().then(credentials => {
-      Meteor.call('accounts.signIn', { credentials, nodeIdx: this.state.iBankBanker }, this.getCB('/bank'))
+      const iBank = this.state.iBankBanker
+      Meteor.call('accounts.signIn', { credentials, nodeIdx: iBank }, this.getCB({ next: '/bank', iBank }))
     })
   }
 
   auditorLogin () {
     return this.loginUPort().then(credentials => {
-      Meteor.call('accounts.signIn', { credentials, nodeIdx: 0 }, this.getCB('/auditor'))
+      Meteor.call('accounts.signIn', { credentials, nodeIdx: 0 }, this.getCB({ next: '/auditor', iBank: 0 }))
     })
   }
 
@@ -74,7 +77,7 @@ class Home extends Component {
           <h3 className='subtitle is-3'>Login</h3>
           <div className='columns'>
             <div className='column'>
-              <label class='label'>Investor</label>
+              <label className='label'>Investor</label>
               <div className='field has-addons'>
                 <div className='control'>
                   <div className='select'>
@@ -91,7 +94,7 @@ class Home extends Component {
               </div>
             </div>
             <div className='column'>
-              <label class='label'>Banker</label>
+              <label className='label'>Banker</label>
               <div className='field has-addons'>
                 <div className='control'>
                   <div className='select'>
@@ -108,7 +111,7 @@ class Home extends Component {
               </div>
             </div>
             <div className='column'>
-              <label class='label'>Auditor</label>
+              <label className='label'>Auditor</label>
               <a className='button is-dark' onClick={() => this.auditorLogin()}>Login</a>
             </div>
           </div>

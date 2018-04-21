@@ -32,6 +32,7 @@ class PublicOfferTable extends Component {
       <table className='table is-fullwidth'>
         <thead>
           <tr className='has-text-light has-background-dark'>
+            <th />
             <th className='has-text-light'>Stock Name</th>
             <th className='has-text-light'>Unit Price</th>
             <th className='has-text-light'>Shares</th>
@@ -42,6 +43,7 @@ class PublicOfferTable extends Component {
         </thead>
         <tbody>
           {Object.keys(this.state.stockMap).length > 0 && this.state.offers.map((offer, i) => <tr key={i}>
+            <td># {offer.id}</td>
             <td>{this.state.stockMap[offer.stockId]}</td>
             <td>{offer.unitPrice}</td>
             <td>{offer.shares}</td>
