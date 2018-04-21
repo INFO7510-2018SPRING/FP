@@ -37,7 +37,6 @@ class Home extends Component {
         toastr.error('Account not found.')
       } else {
         toastr.success('Login success.')
-        console.log(account)
         window.sessionStorage.setItem('address', account.address)
         window.sessionStorage.setItem('iBank', iBank)
         this.props.history.push(next)
@@ -81,7 +80,7 @@ class Home extends Component {
               <div className='field has-addons'>
                 <div className='control'>
                   <div className='select'>
-                    <select value={this.state.iBankInvestor} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
+                    <select value={this.state.iBankInvestor} onChange={e => this.setState({ iBankInvestor: parseInt(e.target.value) })}>
                       <option value='1'>CHASE</option>
                       <option value='2'>BOA</option>
                       <option value='3'>STANDAR</option>
@@ -98,7 +97,7 @@ class Home extends Component {
               <div className='field has-addons'>
                 <div className='control'>
                   <div className='select'>
-                    <select value={this.state.iBankBanker} onChange={e => this.setState({ iBankInvestor: e.target.value })}>
+                    <select value={this.state.iBankBanker} onChange={e => this.setState({ iBankBanker: parseInt(e.target.value) })}>
                       <option value='1'>CHASE</option>
                       <option value='2'>BOA</option>
                       <option value='3'>STANDAR</option>

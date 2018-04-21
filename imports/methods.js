@@ -69,7 +69,7 @@ Meteor.methods({
       const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
       const update = { $inc: { balance: -totalPrice, frozenBalance: totalPrice } }
       Accounts.update({ address }, update)
-      PairingRequests.insert({ offer, address, iBank, type: 'sell', state: 'Accepted', dateTime: new Date() })
+      PairingRequests.insert({ offer, address, iBank, type: 'sell', state: 'Accepted, under bank review', dateTime: new Date() })
       // TODO: receipt contract
     }
   },
@@ -88,8 +88,61 @@ Meteor.methods({
         update['$inc'][frozenStockSharesKey] = totalPrice
       }
       Accounts.update({ address }, update)
-      PairingRequests.insert({ offer, address, iBank, type: 'buy', state: 'Accepted', dateTime: new Date() })
+      PairingRequests.insert({ offer, address, iBank, type: 'buy', state: 'Accepted, under bank review', dateTime: new Date() })
       // TODO: receipt contract
     }
+  },
+
+  'bank.getRequest' ({ iBank }) {
+    if (Meteor.isServer) {
+      return PairingRequests.find({ iBank }).fetch()
+    }
+  },
+
+  'bank.approveRequest' ({ iBank, type, offer, address, _id }) {
+    if (Meteor.isServer) {
+      PairingRequests.update({ _id }, { $set: { state: 'Approved by Bank, under auditor review' } })
+      const args = {
+        stockId: parseInt(offer.stockId),
+        unitPrice: parseInt(offer.unitPrice),
+        shares: parseInt(offer.shares),
+        i: iBank
+      }
+      if (type === 'sell') {
+        args.buyer = address
+        return bank.makeBuyOffer(args)
+      } else {
+        args.seller = address
+        return bank.makeSellOffer(args)
+      }
+    }
+  },
+
+  'bank.rejectRequest' ({ iBank, type, offer, address, _id }) {
+    if (Meteor.isServer) {
+      const update = {}
+      if (type === 'sell') {
+        const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
+        update['$inc'] = { balance: totalPrice, frozenBalance: -totalPrice }
+      } else {
+        const stockSharesKey = `stockShares.${offer.stockId}`
+        const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
+        update['$inc'] = { [stockSharesKey]: offer.shares, [frozenStockSharesKey]: -offer.shares }
+      }
+      Accounts.update({ address }, update)
+      PairingRequests.update({ _id }, { $set: { state: 'Rejected' } })
+    }
+  },
+
+  'auditor.approveRequest' ({ iBank, type, offer, address, _id }) {
+    // const update = {}
+    // if (type === 'sell') {
+    //   const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
+    //   update['$inc'] = { frozenBalance: -totalPrice }
+    // } else {
+    //   const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
+    //   update['$inc'] = { [frozenStockSharesKey]: offer.shares }
+    // }
+    // Accounts.update({ address }, update)
   }
 })

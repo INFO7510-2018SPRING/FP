@@ -5,10 +5,11 @@ import { withRouter } from 'react-router-dom'
 
 import { OpeningBuyOfferTable, OpeningSellOfferTable } from './components/PublicOfferTable'
 import MyHistoryTable from './components/MyHistoryTable'
+import auth from './auth'
 
 class Investor extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       account: null,
       stockMap: {}
@@ -16,34 +17,7 @@ class Investor extends Component {
   }
 
   componentDidMount () {
-    const address = window.sessionStorage.getItem('address')
-    const iBank = window.sessionStorage.getItem('iBank')
-
-    if (!address || !iBank) {
-      this.invalidLogin()
-    }
-
-    Meteor.call('accounts.getByAddress', { address }, (err, account) => {
-      if (err || !account) {
-        console.error(err)
-        this.invalidLogin()
-      } else {
-        this.setState({ account, iBank: parseInt(iBank) })
-      }
-    })
-
-    Meteor.call('publics.getStockList', (err, res) => {
-      if (err) {
-        console.error(err)
-      } else {
-        res.map(stock => this.setState({ stockMap: { ...this.state.stockMap, [stock.id]: stock.name } }))
-      }
-    })
-  }
-
-  invalidLogin () {
-    toastr.error('Invalid login.')
-    this.props.history.push('/')
+    auth.didMount.apply(this)
   }
 
   renderSellOfferButton (offer) {
@@ -101,6 +75,14 @@ class Investor extends Component {
     return this.state.account.balance || 0
   }
 
+  getFrozenBalance () {
+    if (!this.state.account) {
+      return 0
+    } else {
+      return this.state.account.frozenBalance || 0
+    }
+  }
+
   getShares () {
     if (!this.state.account || Object.keys(this.state.stockMap).length === 0) {
       return ''
@@ -112,7 +94,7 @@ class Investor extends Component {
       </div>
     )
 
-    const frozenStockShares = this.state.account.stockShares
+    const frozenStockShares = this.state.account.frozenStockShares
     const frozenShares = Object.keys(this.state.stockMap).map(key =>
       <div className='navbar-item' key={key + '-frozen'}>
         {this.state.stockMap[key] + '(Frozen)'}: {frozenStockShares ? frozenStockShares[key] || 0 : 0}
@@ -141,6 +123,14 @@ class Investor extends Component {
               </div>
               <div className='navbar-item has-dropdown is-hoverable'>
                 <div className='navbar-link'>
+                  Shares
+                </div>
+                <div className='navbar-dropdown'>
+                  {this.getShares()}
+                </div>
+              </div>
+              <div className='navbar-item has-dropdown is-hoverable'>
+                <div className='navbar-link'>
                   Balance
                 </div>
                 <div className='navbar-dropdown'>
@@ -148,18 +138,13 @@ class Investor extends Component {
                     {this.getBalance()}
                   </div>
                   <div className='navbar-item'>
-                    Frozen: {this.getBalance()}
+                    Frozen: {this.getFrozenBalance()}
                   </div>
                 </div>
               </div>
-              <div className='navbar-item has-dropdown is-hoverable'>
-                <div className='navbar-link'>
-                  Shares
-                </div>
-                <div className='navbar-dropdown'>
-                  {this.getShares()}
-                </div>
-              </div>
+              <a className='navbar-item' onClick={() => auth.logout.call(this)}>
+                Logout
+              </a>
             </div>
           </div>
         </nav>

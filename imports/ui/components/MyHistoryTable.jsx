@@ -30,17 +30,17 @@ class MyHistoryTable extends Component {
             <th className='has-text-light'>My Request</th>
             <th className='has-text-light'>Offer</th>
             <th className='has-text-light'>State</th>
-            <th className='has-text-light'>Receipt</th>
+            {/* <th className='has-text-light'>Receipt</th> */}
           </tr>
         </thead>
         <tbody>
           {this.state.history.map((one, i) => (
             <tr key={i}>
               <td>{one.dateTime.toISOString()}</td>
-              <td>{`Request Pairing ${one.type === 'sell' ? 'Buy' : 'Sell'} Offer`}</td>
+              <td>{`Request Pairing ${one.type.charAt(0).toUpperCase() + one.type.slice(1)} Offer`}</td>
               <td># {one.offer.id}</td>
               <td>{one.state}</td>
-              <td>r</td>
+              {/* <td>r</td> */}
             </tr>
           ))}
         </tbody>
