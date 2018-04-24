@@ -37,49 +37,59 @@ contract Bank is Ownable {
     enum OfferState { Created, Matched, Canceled }
 
     mapping (uint => Offer) public buyOffers;
+    mapping (bytes32 => uint) public buyOfferIds;
     uint public buyOfferCounter;
 
     mapping (uint => Offer) public sellOffers;
+    mapping (bytes32 => uint) public sellOfferIds;
     uint public sellOfferCounter;
     
     // When the bank makes a buy offer
     // 1. An offer with state of `Created` will be created.
     // 2. The totalPrice will be frozen from its balance.
-    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer) onlyBank public {
+    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer, bytes32 _hash) onlyBank public returns (uint offerId){
+        require(buyOfferIds[_hash] == 0);
+
         uint totalPrice = _unitPrice * _shares;
         assert(_unitPrice == totalPrice / _shares);
         require(balance >= totalPrice);
         balance -= totalPrice;
         frozenBalance += totalPrice;
 
-        buyOfferCounter++;
-        buyOffers[buyOfferCounter] = Offer({
-            id: buyOfferCounter,
+        offerId = buyOfferCounter++;
+        buyOffers[offerId] = Offer({
+            id: offerId,
             investor: _buyer,
             stockId: _stockId,
             unitPrice: _unitPrice,
             shares: _shares,
             state: OfferState.Created
         });
+
+        buyOfferIds[_hash] = offerId;
     }
     
     // When the bank makes a sell offer
     // 1. An offer with state of `Created` will be created.
     // 2. The stock shares will be frozen from its stockShares.
-    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller) onlyBank public {
+    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller, bytes32 _hash) onlyBank public returns (uint offerId){
+        require(sellOfferIds[_hash] == 0);
+
         require(stockShares[_stockId] >= _shares);
         stockShares[_stockId] -= _shares;
         frozenStockShares[_stockId] += _shares;
 
-        sellOfferCounter++;
-        sellOffers[sellOfferCounter] = Offer({
-            id: sellOfferCounter,
+        offerId = sellOfferCounter++;
+        sellOffers[offerId] = Offer({
+            id: offerId,
             investor: _seller,
             stockId: _stockId,
             unitPrice: _unitPrice,
             shares: _shares,
             state: OfferState.Created
         });
+
+        sellOfferIds[_hash] = offerId;
     }
 
     // When the auditor approves and matches a buyOffer

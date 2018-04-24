@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import { Meteor } from 'meteor/meteor'
 import toastr from 'toastr'
+import { withRouter } from 'react-router-dom'
 
 import auth from './auth'
-import { Meteor } from 'meteor/meteor'
 
-export default class Bank extends Component {
+class Bank extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -162,12 +163,12 @@ export default class Bank extends Component {
         </nav>
         <div className='section'>
           <div className='container'>
-            <h2 className='title is-2'>Bank</h2>
-            <h3 className='title is-3'>Pairing Request From Investor</h3>
+            <h2 className='title is-2'>Pairing Request From Investor</h2>
             <table className='table is-fullwidth'>
               <thead>
                 <tr className='has-background-dark'>
                   <th className='has-text-light'>DateTime</th>
+                  <th className='has-text-light' style={{ maxWidth: 120 }}>Investor</th>
                   <th className='has-text-light'>Request</th>
                   <th className='has-text-light'>Offer</th>
                   <th className='has-text-light'>State</th>
@@ -178,6 +179,7 @@ export default class Bank extends Component {
                 {this.state.requests && this.state.requests.map((request, i) => (
                   <tr key={i}>
                     <td>{request.dateTime.toISOString()}</td>
+                    <td style={{ maxWidth: 120, overflowX: 'scroll' }} >{request.address}</td>
                     <td>{`Request Pairing ${request.type === 'sell' ? 'Buy' : 'Sell'} Offer`}</td>
                     <td># {request.offer.id}</td>
                     <td>{request.state}</td>
@@ -192,3 +194,5 @@ export default class Bank extends Component {
     )
   }
 }
+
+export default withRouter(Bank)

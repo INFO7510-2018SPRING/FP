@@ -42,6 +42,7 @@ class PublicOfferTable extends Component {
           </tr>
         </thead>
         <tbody>
+          {this.state.offers.length === 0 && <tr><td>No Data</td></tr>}
           {Object.keys(this.state.stockMap).length > 0 && this.state.offers.map((offer, i) => <tr key={i}>
             <td># {offer.id}</td>
             <td>{this.state.stockMap[offer.stockId]}</td>

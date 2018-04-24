@@ -6,6 +6,7 @@ import "./Ownable.sol";
 contract PublicOffers is Ownable {
     struct Offer {
         uint id;
+        bytes32 privateHash;
         uint stockId;
         uint unitPrice;
         uint shares;
@@ -37,10 +38,11 @@ contract PublicOffers is Ownable {
         banks[_bank] = false;
     }
 
-    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares) public onlyBanks {
+    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, bytes32 _privateHash) public onlyBanks {
         buyOfferCounter++;
         buyOffers[buyOfferCounter] = Offer({
             id: buyOfferCounter,
+            privateHash: _privateHash,
             stockId: _stockId,
             unitPrice: _unitPrice,
             shares: _shares,
@@ -50,10 +52,11 @@ contract PublicOffers is Ownable {
         });
     }
 
-    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares) public onlyBanks {
+    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, bytes32 _privateHash) public onlyBanks {
         sellOfferCounter++;
         sellOffers[sellOfferCounter] = Offer({
             id: sellOfferCounter,
+            privateHash: _privateHash,
             stockId: _stockId,
             unitPrice: _unitPrice,
             shares: _shares,

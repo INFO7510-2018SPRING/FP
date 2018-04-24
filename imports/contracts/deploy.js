@@ -27,6 +27,8 @@ const bank3 = { tmPubKey: tmPubKeys[3], walletAddress: walletAddresses[3] }
 const web3s = [1, 2, 3, 4, 5].map(i => new Web3(`http://localhost:2200${i}`))
 const auditorWeb3 = web3s[0]
 
+const randHash = () => auditorWeb3.utils.sha3(auditorWeb3.utils.randomHex(32))
+
 const loadContract = name => ({
   abi: JSON.parse(fs.readFileSync(`./build/${name}_sol_${name}.abi`)),
   data: '0x' + fs.readFileSync(`./build/${name}_sol_${name}.bin`).toString()
@@ -49,12 +51,12 @@ const defaultOptions = {
 
 const deployStockContract = () => new auditorWeb3.eth.Contract(StockContract.abi)
   .deploy({ data: StockContract.data })
-  .send(defaultOptions)
+  .send({ ...defaultOptions })
   .then(instance => {
     StockContract.instance = instance
     const address = instance.options.address
     console.log(`Stock contract mined: ${address}`)
-    instance.options = Object.assign(instance.options, defaultOptions)
+    instance.options = { ...instance.options, ...defaultOptions }
     return Promise.all(fixtures.Stock.map(
       stock => {
         console.log('Adding stock: ', stock)
@@ -67,16 +69,16 @@ const deployStockContract = () => new auditorWeb3.eth.Contract(StockContract.abi
 
 const deployPublicOffersContract = () => new auditorWeb3.eth.Contract(PublicOffersContract.abi)
   .deploy({ data: PublicOffersContract.data })
-  .send(defaultOptions)
+  .send({ ...defaultOptions })
   .then(instance => {
     const address = instance.options.address
     console.log(`PublicOffers contract mined: ${address}`)
     PublicOffersContract.instances[0] = instance
-    PublicOffersContract.instances[0].options = Object.assign(instance.options, defaultOptions)
+    PublicOffersContract.instances[0].options = { ...instance.options, ...defaultOptions }
     let arr = [1, 2, 3]
     arr.map(i => {
       const publicOffersContract = new web3s[i].eth.Contract(PublicOffersContract.abi, address)
-      publicOffersContract.options = Object.assign(publicOffersContract.options, { gas: 1000000000, gasPrice: 0, from: walletAddresses[i] })
+      publicOffersContract.options = { ...publicOffersContract.options, ...{ gas: 1000000000, gasPrice: 0, from: walletAddresses[i] } }
       PublicOffersContract.instances[i] = publicOffersContract
     })
     return Promise.all(
@@ -97,11 +99,9 @@ const deployBankContract = iBank => {
       data: BankContract.data,
       arguments: [walletAddresses[iBank]]
     })
-    .send(Object.assign(defaultOptions, {
-      privateFor: [tmPubKeys[iBank]]
-    }))
+    .send({ ...defaultOptions, ...{ privateFor: [tmPubKeys[iBank]] } })
     .then(instance => {
-      instance.options = Object.assign(instance.options, defaultOptions)
+      instance.options = { ...instance.options, ...defaultOptions }
       bankContract = instance
       const address = bankContract.options.address
       console.log(`Contract for bank${iBank} mined: ${address}`)
@@ -124,7 +124,7 @@ const deployBankContract = iBank => {
 
 const getBankContract = iBank => {
   const address = BankContract.instances[iBank].options.address
-  const options = Object.assign(defaultOptions, { from: walletAddresses[iBank] })
+  const options = { ...defaultOptions, ...{ from: walletAddresses[iBank] } }
   return Promise.resolve(new web3s[iBank].eth.Contract(BankContract.abi, address, options))
 }
 
@@ -137,23 +137,26 @@ const makeOffers = iBank => {
     })
     .then(() => {
       console.log(`Making buy offer for bank ${iBank}`)
-      return Promise.all(bankFixtures['buy'].map(data => {
+      const p = Promise.resolve()
+      bankFixtures['buy'].map(data => {
         console.log(`\tBuying: ${JSON.stringify(data)}`)
-        return bankContract.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, data.buyer).send({ privateFor: [auditor.tmPubKey] })
-          .then(() => PublicOffersContract.instances[iBank].methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares).send())
-          .then(() => PublicOffersContract.instances[iBank].methods.buyOfferCounter().call())
-          .then(res => console.log('\tPublicOffersContract.buyOfferCounter:' + res))
-      }))
+        const hash = randHash()
+        p.then(() => bankContract.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, data.buyer, hash).send({ privateFor: [auditor.tmPubKey] }))
+          .then(() => PublicOffersContract.instances[iBank].methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, hash).send())
+      })
+      return p
     })
     .then(() => {
       console.log(`Making sell offer for bank ${iBank}`)
-      return Promise.all(bankFixtures['sell'].map(data => {
+      const p = Promise.resolve()
+      bankFixtures['sell'].map(data => {
         console.log(`\tSelling: ${JSON.stringify(data)}`)
-        return bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, data.seller).send({ privateFor: [auditor.tmPubKey] })
-          .then(() => PublicOffersContract.instances[iBank].methods.makeSellOffer(data.stockId, data.unitPrice, data.shares).send())
-          .then(() => PublicOffersContract.instances[iBank].methods.sellOfferCounter().call())
-          .then(res => console.log('\tPublicOffersContract.sellOfferCounter:' + res))
-      }))
+        const hash = randHash()
+        p.then(() => bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, data.seller, hash).send({ privateFor: [auditor.tmPubKey] }))
+          .then(() => bankContract.methods.sellOfferCounter().call())
+          .then(() => PublicOffersContract.instances[iBank].methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, hash).send())
+      })
+      return p
     })
 }
 

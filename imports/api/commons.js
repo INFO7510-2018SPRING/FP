@@ -25,7 +25,7 @@ const getAbi = name => {
 }
 
 const getWeb3 = i => {
-  i = i || 4
+  i = i === undefined ? 4 : i
   return new Web3(`http://localhost:2200${i + 1}`)
 }
 
@@ -59,3 +59,8 @@ export const readAsList = (contract, counter, mapping) => contract.methods[count
       return x
     })
   })
+
+export const randHash = () => {
+  const { sha3, randomHex } = getWeb3(0).utils
+  return sha3(randomHex(32))
+}

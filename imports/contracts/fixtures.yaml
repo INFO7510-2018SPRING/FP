@@ -13,12 +13,12 @@ Bank:
       - stockId: 1
         unitPrice: 6000
         shares: 20
-        buyer: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74'
+        buyer: '0x0d6eafe9ca0258b97839b07230a7ea8fa61b632a'
     sell:
       - stockId: 2
         unitPrice: 8000
         shares: 10
-        seller: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74'
+        seller: '0x0d6eafe9ca0258b97839b07230a7ea8fa61b632a'
   2:
     balance: 100000
     stockShares: 
