@@ -64,10 +64,7 @@ class Auditor extends Component {
     return [{
       render: offer => <ViewButton key='view' offer={offer} type={type} />
     }, {
-      render: offer => <a
-        key={`reject-${type}-${offer.id}`}
-        onClick={() => this.rejectOffer(offer, type)}
-        className='button is-dark is-small'>Reject</a>
+      render: offer => <RejectButton key='reject' offer={offer} rejectOffer={offer => this.rejectOffer(offer, type)} />
     }]
   }
 
@@ -164,6 +161,24 @@ class ViewButton extends Component {
           </div>
         </div>
       </div>
+    )
+  }
+}
+
+class RejectButton extends Component {
+  render () {
+    const { offer } = this.props
+
+    console.log(offer)
+    if (offer.state !== '0') {
+      return <div />
+    }
+
+    return (
+      <a
+        key={`reject-${offer.id}`}
+        onClick={() => this.props.rejectOffer(offer)}
+        className='button is-dark is-small'>Reject</a>
     )
   }
 }

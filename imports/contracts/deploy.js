@@ -3,6 +3,9 @@
 const fs = require('fs')
 const Web3 = require('web3')
 const yaml = require('js-yaml')
+const MongoClient = require('mongodb').MongoClient
+
+const getMongo = () => MongoClient.connect('mongodb://localhost:27017')
 
 const tmPubKeys = [
   'BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo=',
@@ -153,7 +156,6 @@ const makeOffers = iBank => {
         console.log(`\tSelling: ${JSON.stringify(data)}`)
         const hash = randHash()
         p.then(() => bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, data.seller, hash).send({ privateFor: [auditor.tmPubKey] }))
-          .then(() => bankContract.methods.sellOfferCounter().call())
           .then(() => PublicOffersContract.instances[iBank].methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, hash).send())
       })
       return p
@@ -168,6 +170,27 @@ const saveToJSON = () => {
   }
   fs.writeFileSync('./deployedContractAddress.json', JSON.stringify(deployed, null, 2))
   console.log('saved')
+}
+
+const initAccount = () => {
+  let collection
+  let client
+  return getMongo().then(_client => {
+    client = _client
+    collection = client.db('FP').collection('accounts')
+    return collection.drop()
+  })
+    .then(() => collection.insert({
+      address: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74',
+      balance: 80000,
+      frozenBalance: 0,
+      stockShares: {},
+      frozenStockShares: {},
+      nodes: [0, 1, 2, 3, 4]
+    }))
+    .then(() => client.close())
+    .then(() => console.log('account created'))
+    .catch(console.log)
 }
 
 Promise.resolve()
@@ -185,3 +208,5 @@ Promise.resolve()
   .then(() => makeOffers(3))
   .then(() => console.log('\n=== Saving to JSON ==='))
   .then(saveToJSON)
+  .then(() => console.log('\n=== Init Account ==='))
+  .then(initAccount)

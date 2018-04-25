@@ -1,4 +1,4 @@
-import { getBankContract, readAsList, getPublicOffersContract } from './commons'
+import { getBankContract, readAsList, getPublicOffersContract, getWeb3 } from './commons'
 
 const tmPubKeys = [
   'BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo=',
@@ -54,7 +54,7 @@ export const cancelBuyOffer = ({ iBank, publicOfferId }) => {
   const pPrivate = publicOffersContract.methods.buyOffers(publicOfferId).call()
     // FIXME
     .then(({ privateHash }) => bankContract.methods.buyOfferIds(privateHash).call())
-    .then(privateId => bankContract.methods.cancelBuyOffer(parseInt(privateId)).send({ privateFor: tmPubKeys[iBank] }))
+    .then(privateId => bankContract.methods.cancelBuyOffer(parseInt(privateId)).send({ privateFor: [tmPubKeys[iBank]] }))
   const pPublic = publicOffersContract.methods.cancelBuyOffer(publicOfferId).send()
   return Promise.all([pPrivate, pPublic])
 }
@@ -65,9 +65,10 @@ export const cancelSellOffer = ({ iBank, publicOfferId }) => {
   // TODO: validation
   const pPrivate = publicOffersContract.methods.sellOffers(publicOfferId).call()
     // FIXME
-    .then(res => { console.log(res.privateHash); return res })
+    .then(res => { console.log(typeof res.privateHash); return res })
     .then(({ privateHash }) => bankContract.methods.sellOfferIds(privateHash).call())
-    .then(privateId => bankContract.methods.cancelSellOffer(parseInt(privateId)).send({ privateFor: tmPubKeys[iBank] }))
+    .then(res => { console.log(res); return res })
+    .then(privateId => bankContract.methods.cancelSellOffer(parseInt(privateId)).send({ privateFor: [tmPubKeys[iBank]] }))
   const pPublic = publicOffersContract.methods.cancelSellOffer(publicOfferId).send()
   return Promise.all([pPrivate, pPublic])
 }

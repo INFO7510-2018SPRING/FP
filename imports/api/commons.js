@@ -24,7 +24,7 @@ const getAbi = name => {
   return JSON.parse(fs.readFileSync(abiPath))
 }
 
-const getWeb3 = i => {
+export const getWeb3 = i => {
   i = i === undefined ? 4 : i
   return new Web3(`http://localhost:2200${i + 1}`)
 }
@@ -64,3 +64,5 @@ export const randHash = () => {
   const { sha3, randomHex } = getWeb3(0).utils
   return sha3(randomHex(32))
 }
+
+export const getIBank = address => walletAddresses.map(addr => addr.toLowerCase()).indexOf(address.toLowerCase())

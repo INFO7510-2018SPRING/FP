@@ -47,7 +47,7 @@ contract Bank is Ownable {
     // When the bank makes a buy offer
     // 1. An offer with state of `Created` will be created.
     // 2. The totalPrice will be frozen from its balance.
-    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer, bytes32 _hash) onlyBank public returns (uint offerId){
+    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer, bytes32 _hash) onlyBank public {
         require(buyOfferIds[_hash] == 0);
 
         uint totalPrice = _unitPrice * _shares;
@@ -56,9 +56,9 @@ contract Bank is Ownable {
         balance -= totalPrice;
         frozenBalance += totalPrice;
 
-        offerId = buyOfferCounter++;
-        buyOffers[offerId] = Offer({
-            id: offerId,
+        buyOfferCounter++;
+        buyOffers[buyOfferCounter] = Offer({
+            id: buyOfferCounter,
             investor: _buyer,
             stockId: _stockId,
             unitPrice: _unitPrice,
@@ -66,22 +66,22 @@ contract Bank is Ownable {
             state: OfferState.Created
         });
 
-        buyOfferIds[_hash] = offerId;
+        buyOfferIds[_hash] = buyOfferCounter;
     }
     
     // When the bank makes a sell offer
     // 1. An offer with state of `Created` will be created.
     // 2. The stock shares will be frozen from its stockShares.
-    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller, bytes32 _hash) onlyBank public returns (uint offerId){
+    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller, bytes32 _hash) onlyBank public {
         require(sellOfferIds[_hash] == 0);
 
         require(stockShares[_stockId] >= _shares);
         stockShares[_stockId] -= _shares;
         frozenStockShares[_stockId] += _shares;
 
-        offerId = sellOfferCounter++;
-        sellOffers[offerId] = Offer({
-            id: offerId,
+        sellOfferCounter++;
+        sellOffers[sellOfferCounter] = Offer({
+            id: sellOfferCounter,
             investor: _seller,
             stockId: _stockId,
             unitPrice: _unitPrice,
@@ -89,7 +89,7 @@ contract Bank is Ownable {
             state: OfferState.Created
         });
 
-        sellOfferIds[_hash] = offerId;
+        sellOfferIds[_hash] = sellOfferCounter;
     }
 
     // When the auditor approves and matches a buyOffer
