@@ -46,6 +46,7 @@ const PublicOffersContract = loadContract('PublicOffers')
 PublicOffersContract.instances = new Array(4)
 
 const fixtures = yaml.safeLoad(fs.readFileSync('./fixtures.yaml'))
+const getAddress = i => fixtures.Account[i - 1]
 const defaultOptions = {
   from: auditor.walletAddress,
   gas: 1000000000,
@@ -69,6 +70,7 @@ const deployStockContract = () => new auditorWeb3.eth.Contract(StockContract.abi
       }
     ))
   })
+  .catch(console.log)
 
 const deployPublicOffersContract = () => new auditorWeb3.eth.Contract(PublicOffersContract.abi)
   .deploy({ data: PublicOffersContract.data })
@@ -93,6 +95,7 @@ const deployPublicOffersContract = () => new auditorWeb3.eth.Contract(PublicOffe
       })
     )
   })
+  .catch(console.log)
 
 const deployBankContract = iBank => {
   let bankContract
@@ -123,6 +126,7 @@ const deployBankContract = iBank => {
           .then(res => console.log(`Getting initial stockShares for bank ${iBank}, stock: ${id}, shares: ${res}`))
       }))
     })
+    .catch(console.log)
 }
 
 const getBankContract = iBank => {
@@ -134,6 +138,7 @@ const getBankContract = iBank => {
 const makeOffers = iBank => {
   const bankFixtures = fixtures['Bank'][iBank.toString()]
   let bankContract
+  // const cRequest = client.db('FP').collection('pairingRequests')
   return getBankContract(iBank)
     .then(instance => {
       bankContract = instance
@@ -143,8 +148,15 @@ const makeOffers = iBank => {
       const p = Promise.resolve()
       bankFixtures['buy'].map(data => {
         console.log(`\tBuying: ${JSON.stringify(data)}`)
+        const buyerAddress = getAddress(data.buyer)
         const hash = randHash()
-        p.then(() => bankContract.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, data.buyer, hash).send({ privateFor: [auditor.tmPubKey] }))
+        // p.then(() => cRequest.findOne({
+        //   offer: { stockId: data.stockId.toString(), unitPrice: data.unitPrice.toString(), shares: data.shares.toString() },
+        //   iBank,
+        //   type: 'buy',
+        //   address: buyerAddress
+        // }))
+        p.then(() => bankContract.methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, buyerAddress, '', hash).send({ privateFor: [auditor.tmPubKey] }))
           .then(() => PublicOffersContract.instances[iBank].methods.makeBuyOffer(data.stockId, data.unitPrice, data.shares, hash).send())
       })
       return p
@@ -155,11 +167,19 @@ const makeOffers = iBank => {
       bankFixtures['sell'].map(data => {
         console.log(`\tSelling: ${JSON.stringify(data)}`)
         const hash = randHash()
-        p.then(() => bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, data.seller, hash).send({ privateFor: [auditor.tmPubKey] }))
+        const sellerAddress = getAddress(data.seller)
+        // p.then(() => cRequest.findOne({
+        //   offer: { stockId: data.stockId.toString(), unitPrice: data.unitPrice.toString(), shares: data.shares.toString() },
+        //   iBank,
+        //   type: 'sell',
+        //   address: sellerAddress
+        // }))
+        p.then(() => bankContract.methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, sellerAddress, '', hash).send({ privateFor: [auditor.tmPubKey] }))
           .then(() => PublicOffersContract.instances[iBank].methods.makeSellOffer(data.stockId, data.unitPrice, data.shares, hash).send())
       })
       return p
     })
+    .catch(console.log)
 }
 
 const saveToJSON = () => {
@@ -172,29 +192,108 @@ const saveToJSON = () => {
   console.log('saved')
 }
 
-const initAccount = () => {
-  let collection
-  let client
+let client
+const getClient = () => {
   return getMongo().then(_client => {
     client = _client
-    collection = client.db('FP').collection('accounts')
-    return collection.drop()
   })
-    .then(() => collection.insert({
+    .catch(console.log)
+}
+
+// const closeClient = () => {
+//   client && client.close()
+//   console.log('close client')
+// }
+
+const initDB = () => {
+  const db = client.db('FP')
+  return Promise.resolve()
+    .then(() => db.collection('accounts').count())
+    .then(c => c && db.dropCollection('accounts'))
+    .then(() => db.collection('pairingRequests').count())
+    .then(c => c && db.dropCollection('pairingRequests'))
+    .then(() => console.log('collection dropped'))
+    .catch(console.log)
+}
+
+const initAccount = () => {
+  const c = client.db('FP').collection('accounts')
+  console.log('init account')
+  return Promise.resolve()
+    .then(() => c.insertMany(fixtures.Account.map(address => ({
+      address,
+      balance: 0,
+      frozenBalance: 0,
+      stockShares: {},
+      frozenStockShares: {},
+      nodes: []
+    }))))
+    .then(() => c.insert({
       address: '0x824fcdc476f1c85f9fa5f27f8f0c6ce630b7ee74',
-      balance: 80000,
+      balance: 16000000,
       frozenBalance: 0,
       stockShares: {},
       frozenStockShares: {},
       nodes: [0, 1, 2, 3, 4]
     }))
-    .then(() => client.close())
-    .then(() => console.log('account created'))
     .catch(console.log)
 }
 
+// const initRequest = () => {
+//   const cReq = client.db('FP').collection('pairingRequests')
+//   const cAccount = client.db('FP').collection('accounts')
+//   const state = 'Approved by Bank, under auditor review'
+//   const arr = [1, 2, 3]
+//   return Promise.all(arr.map(iBank => {
+//     const bankFixtures = fixtures.Bank[iBank]
+
+//     const getOffer = data => ({
+//       stockId: data.stockId.toString(),
+//       unitPrice: data.unitPrice.toString(),
+//       shares: data.shares.toString()
+//     })
+
+//     const pBuy = Promise.all(bankFixtures.buy.map(data => {
+//       const accountAddress = getAddress(data.buyer)
+//       return Promise.resolve().then(() => cReq.insertOne({
+//         address: accountAddress,
+//         iBank,
+//         state,
+//         type: 'buy',
+//         offer: getOffer(data)
+//       })).then(() => cAccount.update(
+//         { address: accountAddress },
+//         { $inc: { frozenBalance: data.unitPrice * data.shares } }
+//       )).catch(console.log)
+//     }))
+
+//     const pSell = Promise.all(bankFixtures.sell.map(data => {
+//       const accountAddress = getAddress(data.seller)
+//       return Promise.resolve()
+//         .then(() => cReq.insertOne({
+//           address: accountAddress,
+//           iBank,
+//           state,
+//           type: 'sell',
+//           offer: getOffer(data)
+//         }))
+//         .then(() => cAccount.update(
+//           { address: accountAddress },
+//           { $inc: { [`frozenStockShares.${data.stockId}`]: data.shares } }
+//         )).catch(console.log)
+//     }))
+
+//     return Promise.all([pBuy, pSell])
+//   }))
+// }
+
 Promise.resolve()
-  .then(() => console.log('=== Stock ==='))
+  .then(() => console.log('=== Init Mongo ==='))
+  .then(getClient)
+  .then(initDB)
+  .then(initAccount)
+  // .then(initRequest)
+  .then(() => console.log('\n=== Stock ==='))
   .then(deployStockContract)
   .then(() => console.log('\n=== PublicOffers ==='))
   .then(deployPublicOffersContract)
@@ -208,5 +307,5 @@ Promise.resolve()
   .then(() => makeOffers(3))
   .then(() => console.log('\n=== Saving to JSON ==='))
   .then(saveToJSON)
-  .then(() => console.log('\n=== Init Account ==='))
-  .then(initAccount)
+  // .then(closeClient)  // FIXME
+  .catch(console.log)

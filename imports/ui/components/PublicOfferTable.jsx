@@ -3,28 +3,33 @@ import React, { Component } from 'react'
 import { Meteor } from 'meteor/meteor'
 
 class PublicOfferTable extends Component {
-  constructor () {
-    super()
-    this.state = { offers: [], stockMap: {} }
+  constructor (props) {
+    super(props)
+    props = props || {}
+    this.state = { offers: props.offers || [], stockMap: props.stockMap || {} }
   }
 
   componentDidMount () {
-    Meteor.call('publics.getStockList', (err, res) => {
-      if (err) {
-        console.error(err)
-      } else {
-        res.map(stock => this.setState({ stockMap: { ...this.state.stockMap, [stock.id]: stock.name } }))
-      }
-    })
+    if (Object.keys(this.state.stockMap).length === 0) {
+      Meteor.call('publics.getStockList', (err, res) => {
+        if (err) {
+          console.error(err)
+        } else {
+          res.map(stock => this.setState({ stockMap: { ...this.state.stockMap, [stock.id]: stock.name } }))
+        }
+      })
+    }
 
-    Meteor.call(this.methodName, (err, offers) => {
-      if (err) {
-        console.error(err)
-      } else {
-        offers = this.filter ? offers.filter(o => this.filter(o)) : offers
-        this.setState({ offers })
-      }
-    })
+    if (this.state.offers.length === 0) {
+      Meteor.call(this.methodName, (err, offers) => {
+        if (err) {
+          console.error(err)
+        } else {
+          offers = this.filter ? offers.filter(o => this.filter(o)) : offers
+          this.setState({ offers })
+        }
+      })
+    }
   }
 
   render () {
@@ -49,7 +54,7 @@ class PublicOfferTable extends Component {
             <td>{offer.unitPrice}</td>
             <td>{offer.shares}</td>
             <td>{parseInt(offer.unitPrice) * parseInt(offer.shares)}</td>
-            <td>{{ '0': 'Created', '1': 'Matched', '2': 'Canceled' }[offer.state]}</td>
+            <td>{{ '0': 'Created, under auditor review', '1': 'Matched', '2': 'Canceled' }[offer.state]}</td>
             {this.props.actions && <td>
               {this.props.actions.map(action => action.render(offer))}
             </td>}

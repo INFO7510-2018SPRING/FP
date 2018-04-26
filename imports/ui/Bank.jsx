@@ -90,7 +90,7 @@ class Bank extends Component {
         console.error(err)
       } else {
         toastr.success('Request Rejected')
-        this.props.history.push('/404')  // FIXME: another way to update
+        this.props.history.push('/404') // FIXME: another way to update
         this.props.history.push('/bank')
       }
     })
@@ -180,7 +180,7 @@ class Bank extends Component {
                   <tr key={i}>
                     <td>{request.dateTime.toISOString()}</td>
                     <td style={{ maxWidth: 120, overflowX: 'scroll' }} >{request.address}</td>
-                    <td>{`Request Pairing ${request.type === 'sell' ? 'Buy' : 'Sell'} Offer`}</td>
+                    <td>{`Request Pairing ${request.type === 'sell' ? 'Sell' : 'Buy'} Offer`}</td>
                     <td># {request.offer.id}</td>
                     <td>{request.state}</td>
                     <td>{this.renderButton(request)}</td>

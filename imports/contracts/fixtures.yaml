@@ -3,6 +3,10 @@ Stock:
     name: AMZN
   - id: 2
     name: APPL
+Account:
+  - '0x0d6eafe9ca0258b97839b07230a7ea8fa61b632a'
+  - '0xdd59636e082a092950869044e04498d6f93f607a'
+  - '0x5cc5eb1c6341480d303e3b74aac3ee2260342f5d'
 Bank:
   1:
     balance: 200000
@@ -13,12 +17,12 @@ Bank:
       - stockId: 1
         unitPrice: 6000
         shares: 20
-        buyer: '0x0d6eafe9ca0258b97839b07230a7ea8fa61b632a'
+        buyer: 1
     sell:
       - stockId: 2
         unitPrice: 8000
         shares: 10
-        seller: '0x0d6eafe9ca0258b97839b07230a7ea8fa61b632a'
+        seller: 1
   2:
     balance: 100000
     stockShares: 
@@ -28,11 +32,11 @@ Bank:
       - stockId: 1
         unitPrice: 5000
         shares: 20
-        buyer: '0xdd59636e082a092950869044e04498d6f93f607a'
+        buyer: 2
       - stockId: 2
         unitPrice: 8000
         shares: 10
-        buyer: '0xdd59636e082a092950869044e04498d6f93f607a'
+        buyer: 2
     sell: []
   3:
     balance: 0
@@ -44,8 +48,8 @@ Bank:
       - stockId: 1
         unitPrice: 5000
         shares: 20
-        seller: '0x5cc5eb1c6341480d303e3b74aac3ee2260342f5d'
+        seller: 3
       - stockId: 2
         unitPrice: 8000
         shares: 5
-        seller: '0x5cc5eb1c6341480d303e3b74aac3ee2260342f5d'
+        seller: 3

@@ -1,9 +1,6 @@
-/**
- * Register api as meteor methods
- */
 import { Meteor } from 'meteor/meteor'
 import { bank, auditor, publics } from './api'
-import { Mongo } from 'meteor/mongo'
+import { Accounts, PairingRequests } from './collections'
 import mnid from 'mnid'
 
 const methods = {}
@@ -36,9 +33,6 @@ Object.keys(auditor).forEach(key => {
 })
 
 Meteor.methods(methods)
-
-export const Accounts = new Mongo.Collection('accounts')
-export const PairingRequests = new Mongo.Collection('pairingRequests')
 
 Meteor.methods({
   'accounts.signIn' ({ credentials, nodeIdx }) {
@@ -97,52 +91,5 @@ Meteor.methods({
     if (Meteor.isServer) {
       return PairingRequests.find({ iBank }).fetch()
     }
-  },
-
-  'bank.approveRequest' ({ iBank, type, offer, address, _id }) {
-    if (Meteor.isServer) {
-      PairingRequests.update({ _id }, { $set: { state: 'Approved by Bank, under auditor review' } })
-      const args = {
-        stockId: parseInt(offer.stockId),
-        unitPrice: parseInt(offer.unitPrice),
-        shares: parseInt(offer.shares),
-        i: iBank
-      }
-      if (type === 'sell') {
-        args.buyer = address
-        return bank.makeBuyOffer(args)
-      } else {
-        args.seller = address
-        return bank.makeSellOffer(args)
-      }
-    }
-  },
-
-  'bank.rejectRequest' ({ iBank, type, offer, address, _id }) {
-    if (Meteor.isServer) {
-      const update = {}
-      if (type === 'sell') {
-        const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
-        update['$inc'] = { balance: totalPrice, frozenBalance: -totalPrice }
-      } else {
-        const stockSharesKey = `stockShares.${offer.stockId}`
-        const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
-        update['$inc'] = { [stockSharesKey]: offer.shares, [frozenStockSharesKey]: -offer.shares }
-      }
-      Accounts.update({ address }, update)
-      PairingRequests.update({ _id }, { $set: { state: 'Rejected' } })
-    }
-  },
-
-  'auditor.approveRequest' ({ iBank, type, offer, address, _id }) {
-    // const update = {}
-    // if (type === 'sell') {
-    //   const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
-    //   update['$inc'] = { frozenBalance: -totalPrice }
-    // } else {
-    //   const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
-    //   update['$inc'] = { [frozenStockSharesKey]: offer.shares }
-    // }
-    // Accounts.update({ address }, update)
   }
 })

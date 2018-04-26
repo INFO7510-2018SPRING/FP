@@ -28,6 +28,7 @@ contract Bank is Ownable {
 
     struct Offer {
         uint id;
+        string requestId;
         address investor;
         uint stockId;
         uint unitPrice;
@@ -43,11 +44,13 @@ contract Bank is Ownable {
     mapping (uint => Offer) public sellOffers;
     mapping (bytes32 => uint) public sellOfferIds;
     uint public sellOfferCounter;
+
+    event Buy(string _requestId, bytes32 _hash, uint _offerId);
     
     // When the bank makes a buy offer
     // 1. An offer with state of `Created` will be created.
     // 2. The totalPrice will be frozen from its balance.
-    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer, bytes32 _hash) onlyBank public {
+    function makeBuyOffer(uint _stockId, uint _unitPrice, uint _shares, address _buyer, string _requestId, bytes32 _hash) onlyBank public {
         require(buyOfferIds[_hash] == 0);
 
         uint totalPrice = _unitPrice * _shares;
@@ -59,6 +62,7 @@ contract Bank is Ownable {
         buyOfferCounter++;
         buyOffers[buyOfferCounter] = Offer({
             id: buyOfferCounter,
+            requestId: _requestId,
             investor: _buyer,
             stockId: _stockId,
             unitPrice: _unitPrice,
@@ -67,12 +71,14 @@ contract Bank is Ownable {
         });
 
         buyOfferIds[_hash] = buyOfferCounter;
+
+        emit Buy(_requestId, _hash, buyOfferCounter);
     }
     
     // When the bank makes a sell offer
     // 1. An offer with state of `Created` will be created.
     // 2. The stock shares will be frozen from its stockShares.
-    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller, bytes32 _hash) onlyBank public {
+    function makeSellOffer(uint _stockId, uint _unitPrice, uint _shares, address _seller, string _requestId, bytes32 _hash) onlyBank public {
         require(sellOfferIds[_hash] == 0);
 
         require(stockShares[_stockId] >= _shares);
@@ -82,6 +88,7 @@ contract Bank is Ownable {
         sellOfferCounter++;
         sellOffers[sellOfferCounter] = Offer({
             id: sellOfferCounter,
+            requestId: _requestId,
             investor: _seller,
             stockId: _stockId,
             unitPrice: _unitPrice,

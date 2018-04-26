@@ -22,7 +22,7 @@ class Investor extends Component {
 
   renderSellOfferButton (offer) {
     if (!this.state.account) {
-      return <a className='button is-dark is-loading is-small' >Loading</a>
+      return <a key='loading' className='button is-dark is-loading is-small' >Loading</a>
     }
     const balance = this.state.account.balance || 0
     const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
@@ -33,7 +33,7 @@ class Investor extends Component {
 
   renderBuyOfferButton (offer) {
     if (!this.state.account) {
-      return <a className='button is-dark is-loading is-small' >Loading</a>
+      return <a key='loading' className='button is-dark is-loading is-small' >Loading</a>
     }
     const stockShares = this.state.account.stockShares
     const shares = stockShares ? stockShares[offer.stockId] || 0 : 0
@@ -49,7 +49,7 @@ class Investor extends Component {
         console.error(err)
       } else {
         toastr.success('Request Submitted')
-        this.props.history.push('/404')  // FIXME: another way to update
+        this.props.history.push('/404') // FIXME: another way to update
         this.props.history.push('/investor')
       }
     })
@@ -62,7 +62,7 @@ class Investor extends Component {
         console.error(err)
       } else {
         toastr.success('Request Submitted')
-        this.props.history.push('/404')  // FIXME: another way to update
+        this.props.history.push('/404') // FIXME: another way to update
         this.props.history.push('/investor')
       }
     })

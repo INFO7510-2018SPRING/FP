@@ -1,21 +1,46 @@
-import { getBankContract, getPublicOffersContract, readAsList, randHash } from './commons'
+import { getBankContract, getPublicOffersContract, readAsList, randHash, rejectRequest as _rejectRequest, approveRequest as _approveRequest } from './commons'
 
 const auditorPubKey = 'BULeR8JyUWhiuuCMU/HLA0Q5pzkYT+cHII3ZKBey3Bo='
 
-export const makeBuyOffer = ({ i, stockId, unitPrice, shares, buyer }) => {
+const makeBuyOffer = ({ i, stockId, unitPrice, shares, requestId, buyer }) => {
   const bankContract = getBankContract(i)
   const publicOffersContract = getPublicOffersContract(i)
   const hash = randHash()
-  return bankContract.methods.makeBuyOffer(stockId, unitPrice, shares, buyer, hash).send({ privateFor: [auditorPubKey] })
+  console.log(requestId, hash)
+  console.log('params: ', stockId, unitPrice, shares, buyer, requestId, hash)
+  return bankContract.methods.makeBuyOffer(stockId, unitPrice, shares, buyer, requestId, hash).send({ privateFor: [auditorPubKey] })
+    .on('transactionHash', console.log)
     .then(() => publicOffersContract.methods.makeBuyOffer(stockId, unitPrice, shares, hash).send())
 }
 
-export const makeSellOffer = ({ i, stockId, unitPrice, shares, seller }) => {
+const makeSellOffer = ({ i, stockId, unitPrice, shares, requestId, seller }) => {
   const bankContract = getBankContract(i)
   const publicOffersContract = getPublicOffersContract(i)
   const hash = randHash()
-  return bankContract.methods.makeSellOffer(stockId, unitPrice, shares, seller, hash).send({ privateFor: [auditorPubKey] })
+  return bankContract.methods.makeSellOffer(stockId, unitPrice, shares, seller, requestId, hash).send({ privateFor: [auditorPubKey] })
     .then(() => publicOffersContract.methods.makeSellOffer(stockId, unitPrice, shares, hash).send())
+}
+
+export const approveRequest = ({ iBank, type, offer, address, _id }) => {
+  _approveRequest({ _id })
+  const args = {
+    stockId: parseInt(offer.stockId),
+    unitPrice: parseInt(offer.unitPrice),
+    shares: parseInt(offer.shares),
+    i: iBank,
+    requestId: _id
+  }
+  if (type === 'sell') {
+    args.buyer = address
+    return makeBuyOffer(args)
+  } else {
+    args.seller = address
+    return makeSellOffer(args)
+  }
+}
+
+export const rejectRequest = ({ _id }) => {
+  _rejectRequest({ _id })
 }
 
 export const getBuyOfferList = ({ i }) => {

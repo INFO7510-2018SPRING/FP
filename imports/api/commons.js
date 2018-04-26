@@ -1,3 +1,5 @@
+import { Accounts, PairingRequests } from '../collections'
+
 const fs = require('fs')
 const path = require('path')
 
@@ -66,3 +68,38 @@ export const randHash = () => {
 }
 
 export const getIBank = address => walletAddresses.map(addr => addr.toLowerCase()).indexOf(address.toLowerCase())
+
+export const rejectRequest = ({ _id }) => {
+  PairingRequests.update({ _id }, { $set: { state: 'Rejected' } })
+  const request = PairingRequests.findOne({ _id })
+  const { offer, address, type } = request
+  const update = {}
+  if (type === 'sell') {
+    const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
+    update['$inc'] = { balance: totalPrice, frozenBalance: -totalPrice }
+  } else {
+    const stockSharesKey = `stockShares.${offer.stockId}`
+    const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
+    update['$inc'] = { [stockSharesKey]: parseInt(offer.shares), [frozenStockSharesKey]: -parseInt(offer.shares) }
+  }
+  Accounts.update({ address }, update)
+}
+
+export const approveRequest = ({ _id, fromAuditor }) => {
+  const state = fromAuditor ? 'Approved by auditor' : 'Approved by Bank, under auditor review'
+  PairingRequests.update({ _id }, { $set: { state } })
+  if (!fromAuditor) {
+    return
+  }
+  const { address, type, offer } = PairingRequests.findOne({ _id })
+  const update = {}
+  const totalPrice = parseInt(offer.unitPrice) * parseInt(offer.shares)
+  if (type === 'buy') {
+    const frozenStockSharesKey = `frozenStockShares.${offer.stockId}`
+    update['$inc'] = { balance: totalPrice, [frozenStockSharesKey]: -parseInt(offer.shares) }
+  } else {
+    const stockSharesKey = `stockShares.${offer.stockId}`
+    update['$inc'] = { frozenBalance: -totalPrice, [stockSharesKey]: parseInt(offer.shares) }
+  }
+  Accounts.update({ address }, update)
+}
