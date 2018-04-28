@@ -49,7 +49,7 @@ Solidity (Ethereum platform), Quorum API ,React-JS, uPort API, Ant.design, uport
 
 ### Use case:
 
-<img src="./public/donate_panther.png" width="250px" height="250px"/>
+<img src="./docs/FinalStockUML.png" width="350px" height="350px"/>
 
 
 ### How to use
