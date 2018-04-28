@@ -6,7 +6,6 @@
  
 :small_red_triangle:   A solution to post trading services of stock exchange made between customers providing a verifiable chain of trust through a private and public distributed ledger technology :small_red_triangle:
  
-
  
  :moneybag:  :moneybag:  :moneybag:
 
@@ -18,19 +17,19 @@ Blockchain-based equity post trade processes solution: A unique way to trade sto
 (*unique feature- The interaction of banks is based on a federated blockchain which is not hosted on any public chain. This was made possible by the use of Quorum- A permissioned implementation of Ethereum providing data privacy*)
 
 ### Motivation for project:
-```diff
- +Duration between trade execution and settlement
-```
+ 
+&#x1F536; Duration between trade execution and settlement
+
 Despite investors being able to see traded assets in their accounts shortly after transaction, settlement occurs in t+3 days which limits actions to the investor
 
-```diff
- +Inconsistent data
-```
+
+&#x1F536; Inconsistent data
+
 Frequent data changes between custodian banks, clearing houses and exchanges lead to manual validation of data which is error prone
 
-```diff
- +Vulnerability to illegit tampering
-```
+
+&#x1F536; Vulnerability to illegit tampering
+
 Since the databases are not decentralised and immutable, there have been cases where exchanges and brokers have denied services or performed incorrect operations maliciously or with innocuous intents 
 
 
@@ -78,7 +77,7 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 ### Acknowledgments:
 
-We thank Northeastern University along with course faculty for giving us the opportunity to build stock settlement solution on blockchain application. :heart:
+We thank Northeastern University along with course faculty for giving us the opportunity to build stock settlement solution on blockchain application. &#x1F34E;
 
 
 
