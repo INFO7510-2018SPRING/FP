@@ -52,17 +52,6 @@ Solidity (Ethereum platform), Quorum API ,React-JS, uPort API, Ant.design, uport
 <img src="./docs/FinalStockUML.png" width="350px" height="350px"/>
 
 
-### How to use
-
-1. Clone repo and cd into it
-2. Register your own uPort app from [here](https://developer.uport.me/myapps.html)
-3. Create `src/Key.json`  and put your uPort signer into it like `{"uPortSigner": "YOUR_KEY"}`
-4. ```yarn```
-5. ```yarn start```
-8. ```cd src && truffle console```
-9. Inside truffle console, ```migrate```, note if you deploy this app to the mainnet, it will cost you real money.
-10. Modify address in `init_contract.js`
-11. Inside truffle console, ```exec init_contract.js```
 
 
 ### Authors
