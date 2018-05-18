@@ -51,6 +51,13 @@ Solidity (Ethereum platform), Quorum API ,React-JS, uPort API, Ant.design, uport
 
 <img src="./docs/FinalStockUML.png" width="350px" height="350px"/>
 
+### Future state benefits
+
+- Reduced settlement time: Through downstream, post trade automation and efficiency enhancements, settlement can be t+0 days
+- Reduced couter party risks: THrough automated validation with the use of **frozen assets**, custodians benefit from the reduced likelihood that the counter party is unable to settle
+- Reduced operational risk: Through the use of smart contracts to transfer equity and cash, the likelihood of technology and manual errors reduces 
+- Real time confirmation: By storing trade confirmations on DLT, investors can receive notification of settlement without relaying on a custodian
+- Compliance friendly: The auditor can easily view all transactions including the ones which are private between investor and custodian
 
 
 
